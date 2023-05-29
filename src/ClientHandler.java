@@ -27,7 +27,8 @@ public class ClientHandler implements Runnable{
             String message;
             while ((message = in.readLine()) != null){
                 if (message.equals("#exit")){
-
+                    server.broadcast(name + " left the chat!");
+                    shutdown();
                 }
                 else {
                     server.broadcast(name + ": " + message);
@@ -36,7 +37,7 @@ public class ClientHandler implements Runnable{
 
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            shutdown();
         }
     }
 
@@ -44,5 +45,16 @@ public class ClientHandler implements Runnable{
         out.println(message);
     }
 
-
+    public void shutdown() {
+        try {
+            in.close();
+            out.close();
+            if (!client.isClosed()){
+                client.close();
+            }
+        }
+        catch (IOException e){
+            //ignore
+        }
+    }
 }

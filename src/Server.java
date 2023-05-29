@@ -24,7 +24,12 @@ public class Server implements Runnable{
             }
         }
         catch (IOException e) {
-            throw new RuntimeException(e);
+            try {
+                shutdown();
+            }
+            catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 
@@ -37,12 +42,17 @@ public class Server implements Runnable{
     }
 
     public void shutdown() throws IOException {
-        done = true;
-        if (!server.isBound()){
-            server.close();
+        try {
+            done = true;
+            if (!server.isBound()){
+                server.close();
         }
-        for (ClientHandler clientHandler : clientHandlers){
-            clientHandler.shutdown();
+            for (ClientHandler clientHandler : clientHandlers){
+                clientHandler.shutdown();
+            }
+        }
+        catch (IOException e){
+            //ignore
         }
     }
 }
