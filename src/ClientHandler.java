@@ -28,5 +28,7 @@ public class ClientHandler implements Runnable{
         }
     }
 
-
+    public void sendMessage(String message){
+        out.println(message);
+    }
 }
