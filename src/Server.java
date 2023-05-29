@@ -5,14 +5,23 @@ import java.util.ArrayList;
 
 public class Server implements Runnable{
     private ArrayList<ClientHandler> clientHandlers;
+    private ServerSocket server;
+    private boolean done;
+
+    public Server(){
+        clientHandlers = new ArrayList<>();
+        done = false;
+    }
 
     @Override
     public void run() {
         try {
-            ServerSocket server = new ServerSocket(9999);
-            Socket client = server.accept();
-            ClientHandler clientHandler = new ClientHandler(client);
-            clientHandlers.add(clientHandler);
+            server = new ServerSocket(9999);
+            while (!done) {
+                Socket client = server.accept();
+                ClientHandler clientHandler = new ClientHandler(client);
+                clientHandlers.add(clientHandler);
+            }
         }
         catch (IOException e) {
             throw new RuntimeException(e);
@@ -24,6 +33,16 @@ public class Server implements Runnable{
             if (clientHandler != null){
                 clientHandler.sendMessage(message);
             }
+        }
+    }
+
+    public void shutdown() throws IOException {
+        done = true;
+        if (!server.isBound()){
+            server.close();
+        }
+        for (ClientHandler clientHandler : clientHandlers){
+            clientHandler.shutdown();
         }
     }
 }
