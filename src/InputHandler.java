@@ -7,19 +7,23 @@ public class InputHandler implements Runnable {
 
     @Override
     public void run() {
+        Client client = new Client();
         try {
             BufferedReader inReader = new BufferedReader(new InputStreamReader(System.in));
             while (!done) {
                 String message = inReader.readLine();
                 if (message.equals("#exit")){
                     inReader.close();
-                    shutdown();
+                    client.shutdown();
                  }
+                else {
+                    client.getOut().println(message);
+                }
             }
         }
-            catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+        catch (IOException e) {
+            client.shutdown();
         }
     }
 }
+

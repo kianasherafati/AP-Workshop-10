@@ -16,9 +16,17 @@ public class Client implements Runnable{
             Socket client = new Socket("127.0.0.1", 8787);
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            InputHandler inputHandler = new InputHandler();
+            Thread thread = new Thread(inputHandler);
+            thread.start();
+
+            String inMessage;
+            while ((inMessage = in.readLine()) != null){
+                System.out.println(inMessage);
+            }
         }
         catch (IOException e){
-
+            shutdown();
         }
     }
     public void shutdown(){
@@ -33,5 +41,8 @@ public class Client implements Runnable{
         catch (IOException e){
             //ignore
         }
+    }
+    public PrintWriter getOut() {
+        return out;
     }
 }
