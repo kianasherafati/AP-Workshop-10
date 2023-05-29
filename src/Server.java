@@ -18,4 +18,12 @@ public class Server implements Runnable{
             throw new RuntimeException(e);
         }
     }
+
+    public void broadcast(String message){
+        for (ClientHandler clientHandler : clientHandlers){
+            if (clientHandler != null){
+                clientHandler.sendMessage(message);
+            }
+        }
+    }
 }
