@@ -8,6 +8,7 @@ public class Client implements Runnable{
     private Socket client;
     private BufferedReader in;
     private PrintWriter out;
+    private boolean done;
 
     @Override
     public void run() {
@@ -18,6 +19,19 @@ public class Client implements Runnable{
         }
         catch (IOException e){
 
+        }
+    }
+    public void shutdown(){
+        done = true;
+        try {
+            in.close();
+            out.close();
+            if (!client.isClosed()){
+                client.close();
+            }
+        }
+        catch (IOException e){
+            //ignore
         }
     }
 }
