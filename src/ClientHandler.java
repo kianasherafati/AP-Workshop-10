@@ -17,11 +17,23 @@ public class ClientHandler implements Runnable{
     @Override
     public void run() {
         try {
+            Server server = new Server();
             out = new PrintWriter(client.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(client.getInputStream()));
             out.println("please enter your name:");
             name = in.readLine();
-            System.out.println(name + "joined chatroom!");
+            System.out.println(name + "connected!");
+            server.broadcast(name + " joined Chatroom!");
+            String message;
+            while ((message = in.readLine()) != null){
+                if (message.equals("#exit")){
+
+                }
+                else {
+                    server.broadcast(name + ": " + message);
+                }
+            }
+
         }
         catch (IOException e) {
             throw new RuntimeException(e);
