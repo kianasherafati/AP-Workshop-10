@@ -2,11 +2,14 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Server implements Runnable{
     private ArrayList<ClientHandler> clientHandlers;
     private ServerSocket server;
     private boolean done;
+    private ExecutorService pool;
 
     public Server(){
         clientHandlers = new ArrayList<>();
@@ -17,10 +20,12 @@ public class Server implements Runnable{
     public void run() {
         try {
             server = new ServerSocket(9999);
+            pool = Executors.newCachedThreadPool();
             while (!done) {
                 Socket client = server.accept();
                 ClientHandler clientHandler = new ClientHandler(client);
                 clientHandlers.add(clientHandler);
+                pool.execute(clientHandler);
             }
         }
         catch (IOException e) {
